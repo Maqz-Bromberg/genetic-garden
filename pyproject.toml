@@ -1,0 +1,33 @@
+[build-system]
+requires = ["poetry-core>=2.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "genetic-garden"
+version = "0.1.0"
+description = "Procedural 2D plants (trees, bushes, flowers) grown from an id, as SVG. Pure Python, no dependencies."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.9"
+authors = [{ name = "Maqz Bromberg" }]
+keywords = ["procedural", "generative", "svg", "plants", "garden"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Topic :: Multimedia :: Graphics",
+]
+dependencies = []
+
+[project.optional-dependencies]
+png = ["cairosvg"]
+test = ["pytest", "playwright"]
+
+[project.scripts]
+genetic-garden = "genetic_garden.cli:main"
+
+[project.urls]
+Repository = "https://github.com/Maqz-Bromberg/genetic-garden"
+
+[tool.poetry]
+packages = [{ include = "genetic_garden" }]
+include = [{ path = "genetic_garden/web/**/*", format = ["sdist", "wheel"] }]

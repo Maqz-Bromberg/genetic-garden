@@ -1,0 +1,18 @@
+# Optional. genetic-garden itself has NO dependencies -- it is stdlib-only
+# Python 3.9+, so `python -m genetic_garden ...` works in whatever env you
+# already have. This file exists only for the extras:
+#
+#   cairosvg    rasterise the SVGs to PNG, if your site wants bitmaps
+#   pytest      nicer test output than `python -m unittest discover -s tests`
+#   playwright  drives tools/studio_smoke.py, the browser test for the studio
+#               (also needs: python -m playwright install chromium)
+#
+#   conda env create -f environment.yml && conda activate genetic-garden
+name: genetic-garden
+channels:
+  - conda-forge
+dependencies:
+  - python>=3.9
+  - cairosvg
+  - pytest
+  - playwright

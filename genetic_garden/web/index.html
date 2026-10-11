@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>genetic-garden studio</title>
+<link rel="stylesheet" href="/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🌱</text></svg>">
+</head>
+<body>
+
+<header>
+  <h1>genetic-garden <span class="muted">studio</span></h1>
+  <div class="idbar">
+    <label>project id
+      <input id="pid" type="text" value="apollo-rewrite" spellcheck="false">
+    </label>
+    <div id="kingdoms" class="pills"></div>
+    <button id="reseed" title="Same genes, new structural noise">reseed</button>
+    <button id="randomize" title="A completely new genome">randomize</button>
+    <button id="reset" title="Back to the genome this id hashes to">reset to id</button>
+  </div>
+  <a class="docslink" href="/docs/index.html">how it works &rarr;</a>
+</header>
+
+<main>
+  <aside>
+    <section class="panel">
+      <h2>growth</h2>
+      <label class="row">contributions
+        <input id="n" type="range" min="0" max="40" step="1" value="8">
+        <output id="n-out">8</output>
+      </label>
+      <label class="row">maturity at
+        <input id="full" type="range" min="3" max="60" step="1" value="21">
+        <output id="full-out">21</output>
+      </label>
+      <div id="growth-readout" class="readout"></div>
+    </section>
+
+    <section class="panel">
+      <h2>render</h2>
+      <label class="row">size
+        <input id="size" type="range" min="120" max="640" step="20" value="340">
+        <output id="size-out">340</output>
+      </label>
+      <label class="row">detail
+        <select id="detail">
+          <option value="full">full</option>
+          <option value="compact">compact</option>
+          <option value="icon">icon</option>
+        </select>
+      </label>
+      <label class="row">fit
+        <select id="fit">
+          <option value="mature">mature (growth visible)</option>
+          <option value="bbox">bbox (fill frame)</option>
+          <option value="world">world (cross-kingdom)</option>
+        </select>
+      </label>
+      <label class="row">gamma
+        <input id="gamma" type="range" min="0.15" max="1" step="0.01" value="0.55">
+        <output id="gamma-out">0.55</output>
+      </label>
+      <label class="row inline"><input id="ground" type="checkbox" checked> ground</label>
+      <label class="row inline"><input id="bg-on" type="checkbox" checked> background
+        <input id="bg" type="color" value="#f4f1e8">
+      </label>
+    </section>
+
+    <section class="panel">
+      <h2>genome <button id="copy" class="tiny">copy JSON</button></h2>
+      <label class="row">mutate
+        <input id="mut" type="range" min="0" max="0.5" step="0.01" value="0.1">
+        <output id="mut-out">0.10</output>
+        <button id="mutate" class="tiny">apply</button>
+      </label>
+      <div id="genes"></div>
+    </section>
+  </aside>
+
+  <div class="stage">
+    <section class="panel hero">
+      <div id="plant" class="plant"></div>
+      <div id="stats" class="readout"></div>
+      <div class="herobar">
+        <button id="download">download SVG</button>
+      </div>
+    </section>
+
+    <nav class="tabs" id="tabs">
+      <button data-tab="strip" class="on">growth series</button>
+      <button data-tab="icons">icons</button>
+      <button data-tab="variants">variation</button>
+      <button data-tab="divergence">divergence</button>
+      <button data-tab="breed">breeding</button>
+      <button data-tab="garden">garden</button>
+    </nav>
+
+    <section class="panel tabpane" data-pane="strip">
+      <p class="hint">The same genome at every stage. Growth must never
+        reshuffle the plant &mdash; it should read as one individual getting
+        bigger.</p>
+      <div id="strip" class="row-scroll"></div>
+    </section>
+
+    <section class="panel tabpane hidden" data-pane="icons">
+      <p class="hint">Icon detail at 16 / 24 / 32px. Structure below a couple
+        of pixels is dropped rather than clamped up.</p>
+      <div id="icons" class="row-scroll"></div>
+    </section>
+
+    <section class="panel tabpane hidden" data-pane="variants">
+      <p class="hint">Different genomes of this kingdom at the current stage.
+        <button id="reroll-variants" class="tiny">reroll</button></p>
+      <div id="variants" class="grid"></div>
+    </section>
+
+    <section class="panel tabpane hidden" data-pane="divergence">
+      <p class="hint">One genome plus small mutations, at three ages. Because
+        the genes feed a recursion, siblings start alike and grow apart.
+        <button id="reroll-div" class="tiny">reroll</button></p>
+      <label class="row">mutation scale
+        <input id="div-scale" type="range" min="0.01" max="0.25" step="0.01" value="0.07">
+        <output id="div-scale-out">0.07</output>
+      </label>
+      <div id="divergence"></div>
+    </section>
+
+    <section class="panel tabpane hidden" data-pane="garden">
+      <p class="hint">A random assortment on a plane, at random ages. Depth
+        sets position, size and haze all at once; plants are drawn against
+        shared world units, so a mature tree really does tower over a mature
+        flower. <button id="reroll-garden" class="tiny">reroll</button></p>
+      <div class="row">
+        <label>plants
+          <input id="g-count" type="range" min="4" max="60" step="1" value="26">
+          <output id="g-count-out">26</output></label>
+        <label>horizon
+          <input id="g-horizon" type="range" min="0.05" max="0.5" step="0.01" value="0.2">
+          <output id="g-horizon-out">0.20</output></label>
+        <label>height
+          <input id="g-height" type="range" min="240" max="900" step="20" value="500">
+          <output id="g-height-out">500</output></label>
+      </div>
+      <div id="garden" class="garden"></div>
+      <div id="garden-stats" class="readout"></div>
+    </section>
+
+    <section class="panel tabpane hidden" data-pane="breed">
+      <div class="row">
+        <label>parent A <input id="pa" type="text" value="apollo" spellcheck="false"></label>
+        <label>parent B <input id="pb" type="text" value="borealis" spellcheck="false"></label>
+        <label>mutate <input id="bmut" type="range" min="0" max="0.5" step="0.01" value="0.12">
+          <output id="bmut-out">0.12</output></label>
+        <button id="dobreed">cross</button>
+      </div>
+      <div id="breed" class="breed"></div>
+    </section>
+  </div>
+</main>
+
+<script src="/app.js"></script>
+</body>
+</html>
